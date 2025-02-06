@@ -1,0 +1,113 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2f2f2f;
+    color: #dcdcdc;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.messages-container{
+    margin-top: 100px;
+}
+
+h1 {
+    text-align: center;
+    justify-content: center;
+    margin: 40px 0;
+    color: #f5f5f5;
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.friends-list{
+    flex: 1;
+    background: #3b3b3b;
+    padding: 10px;
+    overflow-y: auto;
+    border-right: 2px solid #444;
+}
+
+.friends-list-ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.friends-list li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #444;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.friends-list li:hover {
+    background: #1abc9c;
+}
+
+.friends-list li.active {
+    background: #1abc9c;
+    font-weight: bold;
+}
+
+.chat-window div {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    background: #2f2f2f;
+    color: #dcdcdc;
+}
+
+.message  {
+    position: relative;
+    padding: 8px;
+    align-self: flex-end;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    word-wrap: break-word;
+    width: 50%;
+}
+
+.messages-list div  {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.timestamp{
+    right: 0;
+    margin: 0;
+    padding: 0;
+    margin-left: 20%;
+    text-align: end;
+}
+
+.message .sents  {
+    background: #1abc9c;
+    text-align: end;
+    align-self: flex-end;
+    color: #fff;
+}
+.chat-header {
+    background: #444;
+    padding: 10px;
+    border-bottom: 2px solid #555;
+    font-size: 1.2rem;
+}
+
+.content{
+    padding-right: 5%;
+}
+
+.message .received {
+    background: #444;
+    align-self: flex-start;
+}
