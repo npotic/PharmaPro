@@ -66,13 +66,7 @@ h1 {
     color: #dcdcdc;
 }
 
-.message  {
-    position: relative;
-    padding: 8px;
-    align-self: flex-end;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    word-wrap: break-word;
+.message {
     width: 50%;
 }
 
@@ -83,18 +77,15 @@ h1 {
 }
 
 .timestamp{
-    right: 0;
     margin: 0;
+    margin-top: 10px;
     padding: 0;
-    margin-left: 20%;
     text-align: end;
 }
 
-.message .sents  {
-    background: #1abc9c;
-    text-align: end;
+.sent  {
+    text-align: right;
     align-self: flex-end;
-    color: #fff;
 }
 .chat-header {
     background: #444;
@@ -104,10 +95,15 @@ h1 {
 }
 
 .content{
-    padding-right: 5%;
+    padding: 10px;
+    margin-right: 21%;
+    background:#3498db ;
+    margin-bottom: 10px;
+    color: #ffffff;
+    border-radius: 20px;
+    
 }
 
-.message .received {
-    background: #444;
+.received {
     align-self: flex-start;
 }

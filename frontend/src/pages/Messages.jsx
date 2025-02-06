@@ -13,13 +13,8 @@ const Messages = () => {
 
     useEffect(() => {
         if (!currentUser) {
-            console.log("Korisnik nije još uvek učitan...");
+            console.log("Ucitavanje korisnika.");
             return; // Sačekaj da se currentUser postavi
-        }
-
-        if (!currentUser.id) {
-            console.error("Korisnik nije prijavljen ili ID nije dostupan.");
-            return;
         }
 
         const fetchFriends = async () => {
@@ -35,7 +30,6 @@ const Messages = () => {
         fetchFriends();
     }, [currentUser]);
 
-    // Funkcija za selektovanje prijatelja i preuzimanje poruka
     const handleSelectFriend = async (friendId) => {
         setSelectedFriend(friendId);
         const token = localStorage.getItem("token");
@@ -46,16 +40,14 @@ const Messages = () => {
                 params: { user1Id: currentUser.id, user2Id: friendId }
             });
 
-            console.log("Dobijene poruke:", response.data); // Provera odgovora
-            setMessages(response.data || []); // Postavi prazan niz ako je undefined
+            setMessages(response.data || []); 
         } catch (error) {
             console.error("Greška prilikom preuzimanja poruka:", error);
-            setMessages([]); // Ako dođe do greške, postavi prazan niz umesto undefined
+            setMessages([]);
         }
     };
 
-
-    // Slanje nove poruke
+    // Slanje poruke
     const handleSendMessage = async () => {
         if (!newMessage.trim()) return;
 
@@ -65,6 +57,7 @@ const Messages = () => {
             senderId: currentUser.id,
             receiverId: selectedFriend,
             content: newMessage,
+            timestamp: new Date().toISOString()
         };
 
         try {
@@ -75,9 +68,13 @@ const Messages = () => {
                 }
             });
 
-            console.log("Poruka poslata:", response.data);
-            setMessages(prev => [...prev, newMsg]); // Dodaj poruku u state
+            setMessages(prev => [...prev, {
+                ...newMsg, sender: { id: currentUser.id },
+                receiver: { id: selectedFriend }
+            }]);
+            
             setNewMessage('');
+
         } catch (error) {
             console.error("Greška prilikom slanja poruke:", error);
         }
@@ -119,9 +116,9 @@ const Messages = () => {
                             {messages.map((msg, index) => (
                                 <div
                                     key={index}
-                                    className={`message ${msg.senderId === currentUser.id ? 'sent' : 'received'}`}
+                                    className={`message ${msg.sender?.id === currentUser.id ? 'sent' : 'recived'}`}
                                 >
-                                    <p className="content">{msg.content}</p>
+                                    <span className="content">{msg.content}</span>
                                     <p className="timestamp">{new Date(msg.timestamp).toLocaleTimeString()}</p>
                                 </div>
                             ))}
