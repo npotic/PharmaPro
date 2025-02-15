@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-
-
-
 @RestController
 @RequestMapping("/api/uploads")
 public class ImageUploadController {
@@ -41,6 +38,7 @@ public class ImageUploadController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading image");
         }
     }
+    
     @GetMapping("/images/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {

@@ -78,6 +78,8 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
+
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}/update")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto updateUserDto) {
         try {
@@ -128,7 +130,7 @@ public class UserController {
     @PostMapping("/upload/profile-picture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
-            String imagePath = fileService.saveFile(file);
+            String imagePath = fileService.saveFile(file); // This returns "/images/filename.jpg"
             return ResponseEntity.ok(imagePath);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

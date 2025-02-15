@@ -61,23 +61,34 @@ const Dashboard = () => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('firstName', updateData.firstName);
-        formData.append('lastName', updateData.lastName);
-        formData.append('description', updateData.description);
-        if (updateData.profilePicture instanceof File) {
-            formData.append('file', updateData.profilePicture);
-        }
-        formData.append('password', updateData.password);
 
         try {
-            const response = await axios.put(`/users/${user.id}/update`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+            let profilePicturePath = user.profilePicture; // Keep the existing profile picture path
+
+            // If a new profile picture is provided, upload it first
+            if (updateData.profilePicture instanceof File) {
+                const formData = new FormData();
+                formData.append('file', updateData.profilePicture);
+
+                const uploadResponse = await axios.post('/users/upload/profile-picture', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                profilePicturePath = uploadResponse.data; // Get the new profile picture path
+            }
+
+            // Update user data with the new profile picture path
+            const updateResponse = await axios.put(`/users/${user.id}/update`, {
+                firstName: updateData.firstName,
+                lastName: updateData.lastName,
+                description: updateData.description,
+                profilePicture: profilePicturePath,
+                password: updateData.password,
             });
+
             alert('Podaci uspešno ažurirani!');
-            setUser(response.data);
+            setUser(updateResponse.data); // Update the user state with the new data
         } catch (error) {
             console.error('Greška prilikom ažuriranja podataka:', error);
         }
@@ -169,18 +180,18 @@ const Dashboard = () => {
                 <h2>Podaci korisnika:</h2>
                 {user.username ? (
                     <>
-                        
+                        <img
+                            src={user.profilePicture ? `http://localhost:8080${user.profilePicture}` : '/default-avatar.png'}
+                            alt="Profilna slika"
+                            className="profile-picture"
+                        />
                         <p><strong>Korisničko ime:</strong> {user.username}</p>
                         <p><strong>Ime:</strong> {user.firstName || 'Nije postavljeno'}</p>
                         <p><strong>Prezime:</strong> {user.lastName || 'Nije postavljeno'}</p>
                         <p><strong>Datum rodjenja:</strong> {new Date(user.dateOfBirth).toLocaleDateString() || 'Nije postavljeno'}</p>
-                        <p><strong>Zanimanje:</strong> {user.zanimanje || 'Nije postavljeno'}</p>
+                        <p><strong>Struka:</strong> {user.zanimanje || 'Nije postavljeno'}</p>
                         <p><strong>Opis:</strong> {user.description || 'Nije postavljeno'}</p>
-                        <img 
-                            src={user.profilePicture ? `http://localhost:8080${user.profilePicture}` : '/default-avatar.png'} 
-                            alt="Profilna slika" 
-                            className="profile-picture" 
-                        />
+                        
                     </>
                 ) : (<p>Podaci o korisniku nisu dostupni.</p>)}
             </section>
@@ -248,7 +259,7 @@ const Dashboard = () => {
                             <p><strong>Proizvođač:<br /></strong> {selectedLek.proizvodjac}</p><br />
                             <p><strong>Terapijske indikacije:<br /></strong> {selectedLek.terapijske_indikacije}</p><br />
                             <p><strong>Doziranje i nacin primene: <br /></strong> {selectedLek.doziranje_i_nacin_primene}</p><br />
-                            <img src={selectedLek.fotografija || '/default-avatar.png'} alt="Fotografija" className="photo" />
+                                <img src={selectedLek.fotografija ? `http://localhost:8080${selectedLek.fotografija}` : '/default-avatar.png'} alt="Fotografija" className="slikaLeka" />
                             {isLoggedIn && (
                                 <div>
                                     <button><a onClick={() => handleDeleteMedication(selectedLek.id)} > Ukloni lek iz terapije </a></button>

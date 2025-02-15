@@ -33,13 +33,18 @@ public class UserService {
         user.setZanimanje(userDto.getZanimanje());
         userRepository.save(user);
     }
- 
+
 
     public User updateUser(Long id, UpdateUserDto updateUserDto) {
         
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Korisnik sa ID-jem " + id + " nije pronađen."));
 
+        if (updateUserDto.getProfilePicture() != null && !updateUserDto.getProfilePicture().isEmpty()) {
+            // Ensure the profilePicture is a relative path or URL, not an absolute file system path
+            user.setProfilePicture(updateUserDto.getProfilePicture());
+        }
+        
         if (updateUserDto.getFirstName() != null && !updateUserDto.getFirstName().isEmpty()) {
             user.setFirstName(updateUserDto.getFirstName());
         }
@@ -52,9 +57,6 @@ public class UserService {
             user.setDescription(updateUserDto.getDescription());
         }
 
-        if (updateUserDto.getProfilePicture() != null && !updateUserDto.getProfilePicture().isEmpty()) {
-            user.setProfilePicture(updateUserDto.getProfilePicture());
-        }
 
         if (updateUserDto.getPassword() != null && !updateUserDto.getPassword().isEmpty()) {
             String encodedPassword = passwordEncoder.encode(updateUserDto.getPassword());

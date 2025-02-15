@@ -233,7 +233,9 @@ function Home() {
                             <p><strong>Proizvođač:<br /></strong> {selectedLek.proizvodjac}</p><br />
                             <p><strong>Terapijske indikacije:<br /></strong> {selectedLek.terapijske_indikacije}</p><br />
                             <p><strong>Doziranje i nacin primene: <br /></strong> {selectedLek.doziranje_i_nacin_primene}</p><br />
-                            <img src={selectedLek.fotografija || '/default-avatar.png'} alt="Fotografija" className="photo" />
+                            <img src={selectedLek.fotografija ? `http://localhost:8080${selectedLek.fotografija}` : '/default-avatar.png'} 
+                                alt="Fotografija"
+                                className="slikaLeka" />
                             {isLoggedIn && (
                                 <div>
                                     <button><a onClick={() => handleAddToTherapy(selectedLek.id)} > Dodaj lek u terapiju </a></button>
