@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from '../services/axiosInstance';
 import AuthContext from '../services/AuthContext';
-import '../assets/css/Home.css'; // Poseban CSS za ovu komponentu
+import '../assets/css/Home.css'; 
 
 const SearchUsers = () => {
     const [keyword, setKeyword] = useState('');
@@ -21,7 +21,7 @@ const SearchUsers = () => {
     const sendFriendRequest = async (receiverId) => {
         if (!currentUser) {
             console.log("Korisnik nije još uvek učitan...");
-            return; // Sačekaj da se currentUser postavi
+            return;
         }
 
         if (!currentUser.id) {

@@ -63,7 +63,6 @@ nav {
     color: #dcdcdc;
 }
 
-/* Pretraga i filteri */
 .search-filter-container {
     display: flex;
     justify-content: center;
@@ -100,7 +99,6 @@ select option {
     color: #dcdcdc;
 }
 
-/* Lista lekova */
 .medication-list {
     list-style-type: none;
     width: 80%;
@@ -147,7 +145,6 @@ select option {
     color: #ccc;
 }
 
-/* Dugmici */
 button {
     padding: 12px 20px;
     background: #2ecc71;
@@ -181,11 +178,11 @@ button.reset-button {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Zamagljena pozadina */
+    background: rgba(0, 0, 0, 0.5); 
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000; /* Pobrinite se da popup bude iznad drugih elemenata */
+    z-index: 2000;
 }
 
 .popup {
@@ -245,7 +242,6 @@ button.reset-button {
     margin-top: 15px;
 }
 
-/* Osnovni stilovi za SearchUsers komponentu */
 #root{
     width: 80%;
 }
@@ -318,19 +314,19 @@ button.reset-button {
 }
 
 .search-users-page .search-users-item {
-    position: relative; /* Omogućava apsolutno pozicioniranje unutar ovog elementa */
-    padding: 15px; /* Dodajte dovoljno unutrašnjeg prostora */
+    position: relative; 
+    padding: 15px;
     margin: 5px 0;
     background-color: #333;
     border-radius: 5px;
-    display: flex; /* Koristimo flex za poravnanje sadržaja */
-    align-items: center; /* Vertikalno centriranje */
-    justify-content: space-between; /* Dugme ide skroz desno */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     transition: background-color 0.3s;
 }
 
 .search-users-page .add-friend {
-    position: relative; /* Sada se oslanjamo na flexbox, ne na apsolutno pozicioniranje */
+    position: relative;
     padding: 8px 12px;
     background-color: #2ecc71;
     color: white;

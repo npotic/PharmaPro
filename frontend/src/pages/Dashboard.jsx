@@ -63,9 +63,8 @@ const Dashboard = () => {
         e.preventDefault();
 
         try {
-            let profilePicturePath = user.profilePicture; // Keep the existing profile picture path
+            let profilePicturePath = user.profilePicture; 
 
-            // If a new profile picture is provided, upload it first
             if (updateData.profilePicture instanceof File) {
                 const formData = new FormData();
                 formData.append('file', updateData.profilePicture);
@@ -75,10 +74,9 @@ const Dashboard = () => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                profilePicturePath = uploadResponse.data; // Get the new profile picture path
+                profilePicturePath = uploadResponse.data; 
             }
 
-            // Update user data with the new profile picture path
             const updateResponse = await axios.put(`/users/${user.id}/update`, {
                 firstName: updateData.firstName,
                 lastName: updateData.lastName,
@@ -88,32 +86,41 @@ const Dashboard = () => {
             });
 
             alert('Podaci uspešno ažurirani!');
-            setUser(updateResponse.data); // Update the user state with the new data
+            setUser(updateResponse.data);
+            window.location.reload(false);
         } catch (error) {
             console.error('Greška prilikom ažuriranja podataka:', error);
         }
     };
-
     const handleAddMedication = async (e) => {
         e.preventDefault();
+
         const formData = new FormData();
         formData.append('naziv', addLek.naziv);
         formData.append('farmaceutski_oblik', addLek.farmaceutski_oblik);
         formData.append('proizvodjac', addLek.proizvodjac);
         formData.append('terapijske_indikacije', addLek.terapijske_indikacije);
         formData.append('doziranje_i_nacin_primene', addLek.doziranje_i_nacin_primene);
+        formData.append('namena', addLek.namena);
         if (addLek.fotografija instanceof File) {
             formData.append('file', addLek.fotografija);
         }
-        formData.append('namena', addLek.namena);
 
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Niste prijavljeni. Prijavite se ponovo.');
+                navigate('/login');
+                return;
+            }
 
             const response = await axios.post("http://localhost:8080/api/lekovi", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
                 },
             });
+
             alert('Lek je uspešno dodat!');
             setLekovi((prevLekovi) => [...prevLekovi, response.data]);
         } catch (error) {
@@ -121,7 +128,6 @@ const Dashboard = () => {
             alert('Došlo je do greške prilikom dodavanja leka.');
         }
     };
-
     const handleDeleteMedication = async (lekId) => {
         try {
             const token = localStorage.getItem('token');

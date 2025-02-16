@@ -14,7 +14,7 @@ const Messages = () => {
     useEffect(() => {
         if (!currentUser) {
             console.log("Ucitavanje korisnika.");
-            return; // Sačekaj da se currentUser postavi
+            return; 
         }
 
         const fetchFriends = async () => {
@@ -47,7 +47,6 @@ const Messages = () => {
         }
     };
 
-    // Slanje poruke
     const handleSendMessage = async () => {
         if (!newMessage.trim()) return;
 
@@ -144,4 +143,3 @@ const Messages = () => {
 };
 
 export default Messages;
-

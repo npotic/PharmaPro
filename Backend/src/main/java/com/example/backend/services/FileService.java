@@ -28,6 +28,6 @@ public class FileService {
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        return "/images/" + fileName; // Return a relative path
+        return "/images/" + fileName;
     }
 }

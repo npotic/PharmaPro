@@ -2,7 +2,6 @@ package com.example.backend.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,17 +69,6 @@ public class FriendRequestService {
         return friendRequestRepository.findPendingRequestsByReceiverId(userId);
     }
 
-/*
-    public List<User> getFriends(Long userId) {
-    	List<Friendship> friendships = friendshipRepository.findAllByUser1IdOrUser2Id(userId);
-        if (friendships == null || friendships.isEmpty()) {
-            return List.of();
-        }
-        return friendships.stream()
-            .map(friendship -> Long.valueOf(friendship.getUser1().getId()).equals(userId) ? friendship.getUser2() : friendship.getUser1())
-            .collect(Collectors.toList());
-    }
-*/
     public List<User> getFriends(Long userId) {
         return friendshipRepository.findFriendsByUserId(userId);
     }

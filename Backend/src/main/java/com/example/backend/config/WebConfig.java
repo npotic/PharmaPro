@@ -13,7 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve static files from the upload directory
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("file:" + uploadDir + "/");
     }

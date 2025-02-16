@@ -31,7 +31,6 @@ public class ImageUploadController {
     @PostMapping("/images")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            // Save the file to the directory
             String filePath = saveImage(file);
             return ResponseEntity.ok("Image uploaded successfully: " + filePath);
         } catch (IOException e) {

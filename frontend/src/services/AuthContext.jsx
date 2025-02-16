@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decodedToken = JSON.parse(atob(token.split(".")[1]));
-                setCurrentUser({ id: decodedToken.userId, roles: decodedToken.roles }); // Koristimo userId
+                setCurrentUser({ id: decodedToken.userId, roles: decodedToken.roles });
             } catch (error) {
                 console.error("Greška prilikom dekodiranja tokena:", error);
                 setCurrentUser(null);

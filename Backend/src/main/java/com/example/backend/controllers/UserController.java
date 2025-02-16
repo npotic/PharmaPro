@@ -62,7 +62,6 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Generiši JWT token
         User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Korisnik nije pronađen"));
 
@@ -130,7 +129,7 @@ public class UserController {
     @PostMapping("/upload/profile-picture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
         try {
-            String imagePath = fileService.saveFile(file); // This returns "/images/filename.jpg"
+            String imagePath = fileService.saveFile(file);
             return ResponseEntity.ok(imagePath);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

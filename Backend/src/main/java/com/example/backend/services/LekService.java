@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.backend.models.Lek;
 import com.example.backend.repositories.LekRepository;
@@ -20,8 +18,6 @@ public class LekService {
 	@Autowired
 	private LekRepository lekRepository;
 
-    @Autowired
-    private FileService fileService;
     
 	public List<Lek> getAllLekovi(){
 		return lekRepository.findAll();

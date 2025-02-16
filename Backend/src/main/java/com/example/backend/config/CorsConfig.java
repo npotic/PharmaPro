@@ -17,9 +17,4 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedHeaders("*") 
                 .allowCredentials(true);
     }
-
-	public void setAllowedOrigins(List<String> of) {
-		// TODO Auto-generated method stub
-		
-	}
 }

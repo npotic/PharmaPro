@@ -14,13 +14,12 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
     private static final Key SIGNING_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static final long EXPIRATION_TIME = 86400000L; // Primer: 1 dan
+    private static final long EXPIRATION_TIME = 86400000L; 
 
-    // Generiše token sa korisničkim imenom i ulogama
     public String generateToken(String username, Long userId, Collection<? extends GrantedAuthority> authorities) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
-        claims.put("userId", userId); // Dodajemo userId u token
+        claims.put("userId", userId); 
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -31,8 +30,6 @@ public class JwtUtil {
                 .compact();
     }
 
-
-    // Validira token koristeći korisničko ime i uloge
     public boolean validateToken(String token, String username, Collection<? extends GrantedAuthority> authorities) {
         Claims claims = getClaimsFromToken(token);
         String tokenUsername = claims.getSubject();
@@ -45,12 +42,10 @@ public class JwtUtil {
         return username.equals(tokenUsername) && tokenRoles.equals(authorityRoles) && !isTokenExpired(token);
     }
 
-    // Ekstrahuje korisničko ime iz tokena
     public String extractUsername(String token) {
         return getClaimsFromToken(token).getSubject();
     }
 
-    // Ekstrahuje Claims iz tokena
     public Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SIGNING_KEY)
@@ -59,7 +54,6 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // Proverava da li je token istekao
     private boolean isTokenExpired(String token) {
         return getClaimsFromToken(token).getExpiration().before(new Date());
     }

@@ -11,17 +11,17 @@ function Home() {
     const [filterType, setFilterType] = useState('');
     const [filterNamena, setFilterNamena] = useState('');
     const [filterProizvodjac, setFilterProizvodjac] = useState('');
-    const [selectedLek, setSelectedLek] = useState(null); // Za selektovani lek
-    const [isPopupOpen, setIsPopupOpen] = useState(false); // Za kontrolu popup prozora
+    const [selectedLek, setSelectedLek] = useState(null); 
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const { isLoggedIn } = useContext(AuthContext);
     const navigate = useNavigate();
     
     
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Uklanjanje tokena
-        logout(); // Pozivanje logout funkcije iz AuthContext-a
-        navigate('/login'); // Navigacija
+        localStorage.removeItem('token'); 
+        logout(); 
+        navigate('/login');
     };
 
     useEffect(() => {
@@ -47,10 +47,8 @@ function Home() {
 
      const handleAddToTherapy = async (lekId) => {
         try {
-            // Proveri da li je token prisutan u localStorage
                 const token = localStorage.getItem('token');
 
-                // Ako token nije prisutan, prikaži grešku
                 if (!token) {
                     alert('Token nije pronađen. Prijavite se ponovo.');
                     navigate('/login');
@@ -60,7 +58,6 @@ function Home() {
             console.log(`Dodavanje leka sa ID ${lekId} u terapiju...`);
             console.log("Lek ID: ", lekId);
 
-            // Pošaljite POST zahtev sa tokenom u Authorization headeru
             await axios.post("http://localhost:8080/api/users/terapija/" + lekId, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -88,10 +85,8 @@ function Home() {
 
     const handleDeleteMedication = async (lekId) => {
         try {
-            // Proveri da li je token prisutan u localStorage
             const token = localStorage.getItem('token');
 
-            // Ako token nije prisutan, prikaži grešku
             if (!token) {
                 alert('Token nije pronađen. Prijavite se ponovo.');
                 navigate('/login');
@@ -100,7 +95,6 @@ function Home() {
 
             console.log(`Brisanje leka sa ID ${lekId}...`);
             closePopup();
-            // Pošaljite DELETE zahtev sa tokenom u Authorization headeru
             await axios.delete(`http://localhost:8080/api/lekovi/${lekId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,

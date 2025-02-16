@@ -29,12 +29,10 @@ public class JwtTokenProvider {
         return jwtUtil.validateToken(token, username, authorities);
     }
 
-    // Ekstrahuje korisničko ime iz tokena
     public String getUsernameFromToken(String token) {
         return jwtUtil.extractUsername(token);
     }
 
-    // Ekstrahuje uloge iz tokena
     public List<SimpleGrantedAuthority> getAuthoritiesFromToken(String token) {
         Claims claims = jwtUtil.getClaimsFromToken(token);
         List<String> roles = claims.get("roles", List.class);
@@ -43,14 +41,13 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
     }
 
-    // Proverava da li je token istekao
     private boolean isTokenExpired(String token) {
         return jwtUtil.getClaimsFromToken(token).getExpiration().before(new Date());
     }
     
     public Long getUserIdFromToken(String token) {
         Claims claims = jwtUtil.getClaimsFromToken(token);
-        return claims.get("userId", Long.class); // Čitamo userId iz tokena
+        return claims.get("userId", Long.class);
     }
     
 }

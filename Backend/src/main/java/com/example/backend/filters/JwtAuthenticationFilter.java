@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
         	String username = jwtTokenProvider.getUsernameFromToken(token);
-            Long userId = jwtTokenProvider.getUserIdFromToken(token); // Dohvatamo userId
+            Long userId = jwtTokenProvider.getUserIdFromToken(token);
             var authorities = jwtTokenProvider.getAuthoritiesFromToken(token);
 
             if (jwtTokenProvider.validateToken(token, username, authorities)) {
@@ -53,7 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                 
-                // Dodajemo userId u SecurityContext
                 authentication.setDetails(userId);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

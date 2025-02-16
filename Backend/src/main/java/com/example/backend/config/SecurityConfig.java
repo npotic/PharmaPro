@@ -11,31 +11,31 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.backend.filters.JwtAuthenticationFilter;
-@Configuration
-public class SecurityConfig {
-
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .authorizeRequests()
-            .requestMatchers("/api/lekovi/**", "/api/users/**", "/api/messages/**", "/api/friends/**").permitAll()
-            .requestMatchers("/images/**", "/upload/**", "/profile-picture/**").permitAll() // Allow access to static resources
-            .anyRequest().authenticated()
-            .and()
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-}
+	@Configuration
+	public class SecurityConfig {
+	
+	    @Autowired
+	    private JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+	    @Bean
+	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	        http.csrf().disable()
+	            .authorizeRequests()
+	            .requestMatchers("/api/lekovi/**", "/api/users/**", "/api/messages/**", "/api/friends/**").permitAll()
+	            .requestMatchers("/images/**", "/upload/**", "/profile-picture/**").permitAll()
+	            .anyRequest().authenticated()
+	            .and()
+	            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+	        return http.build();
+	    }
+	
+	    @Bean
+	    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+	        return authConfig.getAuthenticationManager();
+	    }
+	
+	    @Bean
+	    public BCryptPasswordEncoder passwordEncoder() {
+	        return new BCryptPasswordEncoder();
+	    }
+	}

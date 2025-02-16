@@ -41,7 +41,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Korisnik sa ID-jem " + id + " nije pronađen."));
 
         if (updateUserDto.getProfilePicture() != null && !updateUserDto.getProfilePicture().isEmpty()) {
-            // Ensure the profilePicture is a relative path or URL, not an absolute file system path
             user.setProfilePicture(updateUserDto.getProfilePicture());
         }
         

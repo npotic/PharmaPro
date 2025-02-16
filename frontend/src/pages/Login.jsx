@@ -22,8 +22,8 @@ const Login = () => {
 
             if (token) {
                 console.log('Token primljen:', token);
-                login(token); // Postavlja token u AuthContext i localStorage
-                navigate('/dashboard'); // Preusmerava na dashboard
+                login(token);
+                navigate('/dashboard');
             } else {
                 console.error('Prijava nije uspela: token nije vraćen.');
             }
