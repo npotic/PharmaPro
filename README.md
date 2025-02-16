@@ -1,1 +1,8 @@
 ![Home page](frontend/public/Home.jpg)
+![Medicine page](frontend/public/Medicine.jpg)
+![Login page](frontend/public/Login.jpg)
+![Register page](frontend/public/Register.jpg)
+![Dashboard page](frontend/public/Dashboard.jpg)
+![Dashboard1 page](frontend/public/Dashboard2.jpg)
+![Adding friends page](frontend/public/Friends.jpg)
+![Messages and friends page](frontend/public/Messages.jpg)
