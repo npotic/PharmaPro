@@ -1,1 +1,1 @@
-![Home page][frontend/public/Home.jpg]
+![Home page](frontend/public/Home.jpg)
