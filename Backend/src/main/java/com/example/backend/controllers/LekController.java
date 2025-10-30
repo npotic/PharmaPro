@@ -24,7 +24,7 @@ import com.example.backend.services.LekService;
 
 @RestController
 @RequestMapping("/api/lekovi")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class LekController {
 	@Autowired
 	private LekService lekService;
@@ -34,6 +34,7 @@ public class LekController {
 	
 	@Autowired
 	private FileService fileService;
+	
 	@GetMapping
 	public List<Lek> getAllLekovi(){
 		return lekService.getAllLekovi();
@@ -43,53 +44,48 @@ public class LekController {
 	public Lek getLekById(@PathVariable Long id) {
 		return lekService.getLekById(id);
 	}
-	
-    @PreAuthorize("hasRole('USER')")
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/terapija/{id}")
 	public ResponseEntity<Lek> addLek(@RequestBody Lek lek) {
 	    Lek sacuvanLek = lekRepository.save(lek);
 	    return ResponseEntity.ok(sacuvanLek);
 	}
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
-    public ResponseEntity<Lek> addNewLek(@RequestParam("naziv") String naziv,
-                                      @RequestParam("farmaceutski_oblik") String farmaceutskiOblik,
-                                      @RequestParam("proizvodjac") String proizvodjac,
-                                      @RequestParam("terapijske_indikacije") String terapijskeIndikacije,
-                                      @RequestParam("doziranje_i_nacin_primene") String doziranjeINacinPrimene,
-                                      @RequestParam("namena") String namena,
-                                      @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Lek> addNewLek(@RequestBody Lek lek) {
         try {
-            Lek lek = new Lek();
-            lek.setNaziv(naziv);
-            lek.setFarmaceutski_oblik(farmaceutskiOblik);
-            lek.setProizvodjac(proizvodjac);
-            lek.setTerapijske_indikacije(terapijskeIndikacije);
-            lek.setDoziranje_i_nacin_primene(doziranjeINacinPrimene);
-            lek.setNamena(namena);
-            
-            String filePath = fileService.saveFile(file);
-            lek.setFotografija(filePath);
-
             Lek sacuvanLek = lekRepository.save(lek);
             return ResponseEntity.ok(sacuvanLek);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-    
-    @PreAuthorize("hasRole('USER')")
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLek(@PathVariable Long id) {
         lekService.deleteLek(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	@GetMapping("/pretraga")
 	public List<Lek> searchLek(@RequestParam String naziv) {
 		return lekService.findLekoviByNaziv(naziv);
 	}
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadLekImage(@RequestParam MultipartFile file) {
+        try {
+            String filePath = fileService.saveFile(file);
+            return ResponseEntity.ok(filePath);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Greška prilikom učitavanja slike: " + e.getMessage());
+        }
+    }
 }
 

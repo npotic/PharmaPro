@@ -1,6 +1,7 @@
 package com.example.backend.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,27 +26,29 @@ public class FriendRequestController {
     @Autowired
     private FriendRequestService friendRequestService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/request")
-    public ResponseEntity<String> sendFriendRequest(@RequestParam Long senderId, @RequestParam Long receiverId) {
+    public ResponseEntity<String> sendFriendRequest(@RequestBody Map<String, Long> payload) {
+        Long senderId = payload.get("senderId");
+        Long receiverId = payload.get("receiverId");
         friendRequestService.sendFriendRequest(senderId, receiverId);
         return ResponseEntity.ok("Zahtev za prijateljstvo je poslat.");
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/respond")
     public ResponseEntity<String> respondToRequest(@RequestParam Long requestId, @RequestParam boolean accepted) {
         friendRequestService.respondToFriendRequest(requestId, accepted);
         return ResponseEntity.ok("Zahtev za prijateljstvo je ažuriran.");
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/pending")
     public List<Friend_requests> getPendingRequests(@RequestParam Long userId) {
         return friendRequestService.getPendingRequests(userId);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
     public List<User> getFriends(@RequestParam Long userId) {
         return friendRequestService.getFriends(userId);

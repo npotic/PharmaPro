@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from '../services/axiosInstance';
 import AuthContext from '../services/AuthContext';
 import '../assets/css/Home.css';
@@ -11,16 +11,16 @@ function Home() {
     const [filterType, setFilterType] = useState('');
     const [filterNamena, setFilterNamena] = useState('');
     const [filterProizvodjac, setFilterProizvodjac] = useState('');
-    const [selectedLek, setSelectedLek] = useState(null); 
+    const [selectedLek, setSelectedLek] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const { isLoggedIn } = useContext(AuthContext);
     const navigate = useNavigate();
-    
-    
+
+
 
     const handleLogout = () => {
-        localStorage.removeItem('token'); 
-        logout(); 
+        localStorage.removeItem('token');
+        logout();
         navigate('/login');
     };
 
@@ -45,15 +45,15 @@ function Home() {
         return matchesSearch && matchesType && matchesNamena && matchesProizvodjac;
     });
 
-     const handleAddToTherapy = async (lekId) => {
+    const handleAddToTherapy = async (lekId) => {
         try {
-                const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
-                if (!token) {
-                    alert('Token nije pronađen. Prijavite se ponovo.');
-                    navigate('/login');
-                    return;
-                }
+            if (!token) {
+                alert('Token nije pronađen. Prijavite se ponovo.');
+                navigate('/login');
+                return;
+            }
 
             console.log(`Dodavanje leka sa ID ${lekId} u terapiju...`);
             console.log("Lek ID: ", lekId);
@@ -63,13 +63,13 @@ function Home() {
                     'Authorization': `Bearer ${token}`,
                 }
             })
-            .then(response => {
-                console.log(response.data);
-                alert('Lek je dodat u terapiju!');
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                .then(response => {
+                    console.log(response.data);
+                    alert('Lek je dodat u terapiju!');
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
         } catch (error) {
             console.error('Greška prilikom dodavanja leka u terapiju:', error);
@@ -100,12 +100,12 @@ function Home() {
                     'Authorization': `Bearer ${token}`,
                 }
             })
-            .then(response => {
-                console.log(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
             window.location.reload(false);
         } catch (error) {
             console.error('Greška prilikom brisanja leka:', error);
@@ -193,13 +193,13 @@ function Home() {
                     <option value="PharmaSwiss">PharmaSwiss</option>
                     <option value="Strong Nature">Strong Nature</option>
                     <option value="Sopharma">Sopharma</option>
-                    
+
                 </select>
 
-                <button onClick={() => { 
-                    setSearchTerm(''); 
-                    setFilterType(''); 
-                    setFilterNamena(''); 
+                <button onClick={() => {
+                    setSearchTerm('');
+                    setFilterType('');
+                    setFilterNamena('');
                     setFilterProizvodjac('');
                 }}>Resetuj filtere</button>
             </div>
@@ -227,7 +227,7 @@ function Home() {
                             <p><strong>Proizvođač:<br /></strong> {selectedLek.proizvodjac}</p><br />
                             <p><strong>Terapijske indikacije:<br /></strong> {selectedLek.terapijske_indikacije}</p><br />
                             <p><strong>Doziranje i nacin primene: <br /></strong> {selectedLek.doziranje_i_nacin_primene}</p><br />
-                            <img src={selectedLek.fotografija ? `http://localhost:8080${selectedLek.fotografija}` : '/default-avatar.png'} 
+                            <img src={selectedLek.fotografija ? `http://localhost:8080${selectedLek.fotografija}` : '/default-avatar.png'}
                                 alt="Fotografija"
                                 className="slikaLeka" />
                             {isLoggedIn && (
@@ -236,7 +236,7 @@ function Home() {
                                     <button><a onClick={() => handleDeleteMedication(selectedLek.id)} > Obrisi lek </a></button>
 
                                 </div>
-                            )}  
+                            )}
                         </div>
                     </div>
                 </div>

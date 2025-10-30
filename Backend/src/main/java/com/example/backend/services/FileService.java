@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ public class FileService {
     private String uploadDir;
 
     public String saveFile(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Path.of(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }

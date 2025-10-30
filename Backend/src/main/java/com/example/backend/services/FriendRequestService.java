@@ -29,8 +29,10 @@ public class FriendRequestService {
     	if (friendRequestRepository.existsBySenderIdAndReceiverIdAndStatus(senderId, receiverId, "PENDING")) {
     	    throw new IllegalArgumentException("Zahtev za prijateljstvo je već poslat.");
     	}
-
+    	
+    	System.out.println("Provera prijateljstva između " + senderId + " i " + receiverId);
     	if (friendRequestRepository.existsFriendship(senderId, receiverId)) {
+    	    System.out.println("Već su prijatelji.");
     	    throw new IllegalArgumentException("Već ste prijatelji.");
     	}
     	

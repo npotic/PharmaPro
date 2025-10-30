@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import axios from '../services/axiosInstance';
 import AuthContext from '../services/AuthContext';
 import '../assets/css/Home.css'; 
@@ -28,10 +28,18 @@ const SearchUsers = () => {
             console.error("Korisnik nije prijavljen ili ID nije dostupan.");
             return;
         }
+
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            console.error("Token nije pronađen u localStorage!");
+            return;
+        }
+
+        const senderId = currentUser.id;
+
         try {
-            const response = await axios.post("http://localhost:8080/api/friends/request", receiverId, {
+            const response = await axios.post("http://localhost:8080/api/friends/request", { senderId, receiverId }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`

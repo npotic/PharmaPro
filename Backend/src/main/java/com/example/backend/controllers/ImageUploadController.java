@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +28,7 @@ public class ImageUploadController {
     private String uploadDir;
 
     @PostMapping("/images")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadImage(@RequestParam MultipartFile file) {
         try {
             String filePath = saveImage(file);
             return ResponseEntity.ok("Image uploaded successfully: " + filePath);
@@ -41,7 +40,7 @@ public class ImageUploadController {
     @GetMapping("/images/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Path filePath = Paths.get(uploadDir).resolve(filename);
+            Path filePath = Path.of(uploadDir).resolve(filename);
             Resource resource = new UrlResource(filePath.toUri());
             
             if (resource.exists()) {
@@ -57,7 +56,7 @@ public class ImageUploadController {
     }
 
     private String saveImage(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Path.of(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }

@@ -24,14 +24,14 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<String> sendMessage(@RequestBody MessageDto messageDto) {
         messageService.sendMessage(messageDto);
         return ResponseEntity.ok("Poruka je poslata.");
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
     public List<Message> getMessages(@RequestParam Long user1Id, @RequestParam Long user2Id) {
         return messageService.getMessagesBetweenUsers(user1Id, user2Id);

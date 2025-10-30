@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from '../services/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/Login.css'; 
@@ -64,3 +64,4 @@ const Register = () => {
 };
 
 export default Register;
+ 

@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from '../services/axiosInstance';
 import AuthContext from '../services/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
-import '../assets/css/Dashboard.css'; 
+import { useNavigate } from 'react-router-dom';
+import '../assets/css/Dashboard.css';
 
 const Dashboard = () => {
     const [user, setUser] = useState({});
     const [lekovi, setLekovi] = useState([]);
     const [addLek, setAddLek] = useState({
-        naziv: '', 
+        naziv: '',
         farmaceutski_oblik: '',
         proizvodjac: '',
         terapijske_indikacije: '',
         doziranje_i_nacin_primene: '',
         fotografija: '',
         namena: ''
-    })
+    });
     const [updateData, setUpdateData] = useState({
         firstName: '',
         lastName: '',
@@ -26,10 +26,15 @@ const Dashboard = () => {
     const [selectedLek, setSelectedLek] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [terapija, setMedications] = useState([]);
-    const { isLoggedIn } = useContext(AuthContext);
-    const { logout } = useContext(AuthContext);
+    const [pendingFriendRequests, setPendingFriendRequests] = useState([]);
+    const { isLoggedIn, currentUser, logout } = useContext(AuthContext);
 
     const navigate = useNavigate();
+    const [reportType, setReportType] = useState('');
+
+    const hasRole = (roleName) => {
+        return currentUser && currentUser.roles && currentUser.roles.includes(`ROLE_${roleName.toUpperCase()}`);
+    };
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -39,12 +44,18 @@ const Dashboard = () => {
 
                 const terapija = await axios.get('/users/terapija');
                 setMedications(terapija.data);
+
+                const requests = await axios.get(`/friends/pending?userId=${response.data.id}`);
+                setPendingFriendRequests(requests.data);
+
             } catch (error) {
                 console.error('Greška prilikom učitavanja podataka:', error);
             }
         };
-        fetchUserData();
-    }, []);
+        if (isLoggedIn) {
+            fetchUserData();
+        }
+    }, [isLoggedIn, logout, navigate]);
 
     useEffect(() => {
         const fetchLekovi = async () => {
@@ -59,11 +70,12 @@ const Dashboard = () => {
         fetchLekovi();
     }, []);
 
+
     const handleUpdate = async (e) => {
         e.preventDefault();
 
         try {
-            let profilePicturePath = user.profilePicture; 
+            let profilePicturePath = user.profilePicture;
 
             if (updateData.profilePicture instanceof File) {
                 const formData = new FormData();
@@ -74,7 +86,7 @@ const Dashboard = () => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                profilePicturePath = uploadResponse.data; 
+                profilePicturePath = uploadResponse.data;
             }
 
             const updateResponse = await axios.put(`/users/${user.id}/update`, {
@@ -92,19 +104,9 @@ const Dashboard = () => {
             console.error('Greška prilikom ažuriranja podataka:', error);
         }
     };
+
     const handleAddMedication = async (e) => {
         e.preventDefault();
-
-        const formData = new FormData();
-        formData.append('naziv', addLek.naziv);
-        formData.append('farmaceutski_oblik', addLek.farmaceutski_oblik);
-        formData.append('proizvodjac', addLek.proizvodjac);
-        formData.append('terapijske_indikacije', addLek.terapijske_indikacije);
-        formData.append('doziranje_i_nacin_primene', addLek.doziranje_i_nacin_primene);
-        formData.append('namena', addLek.namena);
-        if (addLek.fotografija instanceof File) {
-            formData.append('file', addLek.fotografija);
-        }
 
         try {
             const token = localStorage.getItem('token');
@@ -114,9 +116,32 @@ const Dashboard = () => {
                 return;
             }
 
-            const response = await axios.post("http://localhost:8080/api/lekovi", formData, {
+            let imagePath = null;
+
+            if (addLek.fotografija instanceof File) {
+                const formData = new FormData();
+                formData.append('file', addLek.fotografija);
+
+                const uploadResponse = await axios.post('/lekovi/upload-image', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
+                imagePath = uploadResponse.data;
+            }
+
+            const response = await axios.post("http://localhost:8080/api/lekovi", {
+                naziv: addLek.naziv,
+                farmaceutski_oblik: addLek.farmaceutski_oblik,
+                proizvodjac: addLek.proizvodjac,
+                terapijske_indikacije: addLek.terapijske_indikacije,
+                doziranje_i_nacin_primene: addLek.doziranje_i_nacin_primene,
+                namena: addLek.namena,
+                fotografija: imagePath
+            }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
             });
@@ -128,6 +153,8 @@ const Dashboard = () => {
             alert('Došlo je do greške prilikom dodavanja leka.');
         }
     };
+
+
     const handleDeleteMedication = async (lekId) => {
         try {
             const token = localStorage.getItem('token');
@@ -158,6 +185,58 @@ const Dashboard = () => {
         }
     };
 
+    const handleAcceptRequest = async (requestId) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Niste prijavljeni. Prijavite se ponovo.');
+                navigate('/login');
+                return;
+            }
+
+            await axios.post('/friends/respond', null, {
+                params: {
+                    requestId: requestId,
+                    accepted: true
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            alert('Zahtev za prijateljstvo je prihvaćen!');
+            setPendingFriendRequests(prevRequests => prevRequests.filter(req => req.id !== requestId));
+        } catch (error) {
+            console.error('Greška prilikom prihvatanja zahteva:', error);
+            alert('Došlo je do greške prilikom prihvatanja zahteva.');
+        }
+    };
+
+    const handleDeclineRequest = async (requestId) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Niste prijavljeni. Prijavite se ponovo.');
+                navigate('/login');
+                return;
+            }
+
+            await axios.post('/friends/respond', null, {
+                params: {
+                    requestId: requestId,
+                    accepted: false
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            alert('Zahtev za prijateljstvo je odbijen.');
+            setPendingFriendRequests(prevRequests => prevRequests.filter(req => req.id !== requestId));
+        } catch (error) {
+            console.error('Greška prilikom odbijanja zahteva:', error);
+            alert('Došlo je do greške prilikom odbijanja zahteva.');
+        }
+    };
+
     const openPopup = (lek) => {
         setSelectedLek(lek);
         setIsPopupOpen(true);
@@ -166,6 +245,54 @@ const Dashboard = () => {
     const closePopup = () => {
         setIsPopupOpen(false);
         setSelectedLek(null);
+    };
+    const handleGenerateReport = async () => {
+        if (!reportType) {
+            alert('Molimo odaberite tip izveštaja.');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Niste prijavljeni. Prijavite se ponovo.');
+                navigate('/login');
+                return;
+            }
+
+            const response = await axios.get(`/reports/generate/${reportType}`, {
+                responseType: 'blob',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            const contentDisposition = response.headers['content-disposition'];
+            let fileName = 'izvestaj.pdf';
+            if (contentDisposition) {
+                const fileNameMatch = contentDisposition.match(/filename="([^"]+)"/);
+                if (fileNameMatch && fileNameMatch[1]) {
+                    fileName = fileNameMatch[1];
+                }
+            }
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+            alert(`Izveštaj "${reportType}" je uspešno generisan!`);
+        } catch (error) {
+            console.error('Greška prilikom generisanja izveštaja:', error);
+            alert('Došlo je do greške prilikom generisanja izveštaja. Proverite da li imate potrebne dozvole.');
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                logout();
+                navigate('/login');
+            }
+        }
     };
 
     return (
@@ -197,12 +324,29 @@ const Dashboard = () => {
                         <p><strong>Datum rodjenja:</strong> {new Date(user.dateOfBirth).toLocaleDateString() || 'Nije postavljeno'}</p>
                         <p><strong>Struka:</strong> {user.zanimanje || 'Nije postavljeno'}</p>
                         <p><strong>Opis:</strong> {user.description || 'Nije postavljeno'}</p>
-                        
+
                     </>
                 ) : (<p>Podaci o korisniku nisu dostupni.</p>)}
             </section>
-            
-            
+
+            <section className="notifications medications">
+                <h2>Obaveštenja</h2>
+                {pendingFriendRequests && pendingFriendRequests.length > 0 ? (
+                    <div className="friend-requests-list">
+                        {pendingFriendRequests.map((request) => (
+                            <div key={request.id} className="friend-request-item">
+                                <p>Imate zahtev za prijateljstvo od: <strong>{request.sender.firstName} {request.sender.lastName}</strong> ({request.sender.username})</p>
+                                <button onClick={() => handleAcceptRequest(request.id)}>Prihvati</button>
+                                <button onClick={() => handleDeclineRequest(request.id)}>Odbij</button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>Nemate novih obaveštenja.</p>
+                )}
+            </section>
+
+
             <section className="update-form">
                 <h2>Ažuriranje podataka:</h2>
                 <form onSubmit={handleUpdate}>
@@ -244,37 +388,37 @@ const Dashboard = () => {
                 <h2>Terapija</h2>
                 {terapija && terapija.length > 0 ? (
                     <ul className="medication-list-dashboard">
-            {terapija.map((lek) => (
-                <li key={lek.id} onClick={() => openPopup(lek)} className="medication-item-dashboard">
-                    {lek.naziv}
-                </li>
-            ))}
+                        {terapija.map((lek) => (
+                            <li key={lek.id} onClick={() => openPopup(lek)} className="medication-item-dashboard">
+                                {lek.naziv}
+                            </li>
+                        ))}
                     </ul>
-                    
-    ) : (
-        <p>Nemate obeležene lekove u terapiji.</p>
+
+                ) : (
+                    <p>Nemate obeležene lekove u terapiji.</p>
                 )}
                 {isPopupOpen && selectedLek && (
-                <div className="popup-overlay">
-                    <div className="popup">
-                        <div className="inner-popup">
-                            <button className="close-btn" onClick={closePopup}>X</button>
-                            <h2 className="details">Detalji leka</h2>
-                            <p><strong>Naziv:</strong> </p><h3>{selectedLek.naziv}</h3>
-                            <p><strong>Farmaceutski oblik:<br /></strong> {selectedLek.farmaceutski_oblik}</p><br />
-                            <p><strong>Proizvođač:<br /></strong> {selectedLek.proizvodjac}</p><br />
-                            <p><strong>Terapijske indikacije:<br /></strong> {selectedLek.terapijske_indikacije}</p><br />
-                            <p><strong>Doziranje i nacin primene: <br /></strong> {selectedLek.doziranje_i_nacin_primene}</p><br />
+                    <div className="popup-overlay">
+                        <div className="popup">
+                            <div className="inner-popup">
+                                <button className="close-btn" onClick={closePopup}>X</button>
+                                <h2 className="details">Detalji leka</h2>
+                                <p><strong>Naziv:</strong> </p><h3>{selectedLek.naziv}</h3>
+                                <p><strong>Farmaceutski oblik:<br /></strong> {selectedLek.farmaceutski_oblik}</p><br />
+                                <p><strong>Proizvođač:<br /></strong> {selectedLek.proizvodjac}</p><br />
+                                <p><strong>Terapijske indikacije:<br /></strong> {selectedLek.terapijske_indikacije}</p><br />
+                                <p><strong>Doziranje i nacin primene: <br /></strong> {selectedLek.doziranje_i_nacin_primene}</p><br />
                                 <img src={selectedLek.fotografija ? `http://localhost:8080${selectedLek.fotografija}` : '/default-avatar.png'} alt="Fotografija" className="slikaLeka" />
-                            {isLoggedIn && (
-                                <div>
-                                    <button><a onClick={() => handleDeleteMedication(selectedLek.id)} > Ukloni lek iz terapije </a></button>
-                                </div>
-                            )}  
+                                {isLoggedIn && (
+                                    <div>
+                                        <button><a onClick={() => handleDeleteMedication(selectedLek.id)} > Ukloni lek iz terapije </a></button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
             </section>
 
             <section className="update-form">
@@ -327,6 +471,24 @@ const Dashboard = () => {
                     <button type="submit">Dodaj novi lek</button>
                 </form>
             </section>
+            {hasRole('ADMIN') && (
+                <section className="reports medications">
+                    <h2>Izveštaji</h2>
+                    <div className="report-controls">
+                        <select
+                            value={reportType}
+                            onChange={(e) => setReportType(e.target.value)}
+                        >
+                            <option value="">Odaberite tip izveštaja</option>
+                            <option value="lekova">Izveštaj lekova</option>
+                            <option value="korisnika">Izveštaj korisnika</option>
+                        </select>
+                        <button onClick={handleGenerateReport} disabled={!reportType}>
+                            Generiši i preuzmi izveštaj
+                        </button>
+                    </div>
+                </section>
+            )}
         </div>
     );
 };

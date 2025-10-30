@@ -12,16 +12,26 @@ public class UserDto {
     private String zanimanje;
     private String lastName;
     private String profilePicture;
+    private String role_name;
 
-    public UserDto(String username, String firstName, String lastName, String zanimanje, String  description, String profilePicture) {
+    public UserDto(String username, String firstName, String lastName, String zanimanje, String  description, String profilePicture, String role_name) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.description = description;
         this.profilePicture = profilePicture;
+        this.role_name = role_name;
     }
 
-    public String getUsername() {
+    public String getRole_name() {
+		return role_name;
+	}
+
+	public void setRole_name(String role_name) {
+		this.role_name = role_name;
+	}
+
+	public String getUsername() {
         return username;
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize; 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,6 +69,7 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
 
+    @PreAuthorize("isAuthenticated()") 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -77,8 +78,7 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
-
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/{id}/update")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserDto updateUserDto) {
         try {
@@ -89,7 +89,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/terapija/{id}")
     public ResponseEntity<String> addToTherapy(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
@@ -102,6 +102,7 @@ public class UserController {
         return ResponseEntity.ok("Lek je dodat u terapiju!");
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/terapija")
     public ResponseEntity<List<Lek>> getUserTherapy(Principal principal) {
         User user = userRepository.findByUsername(principal.getName())
@@ -109,6 +110,7 @@ public class UserController {
         return ResponseEntity.ok(user.getTherapy());
     }
     
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @DeleteMapping("/terapija/{id}")
     public ResponseEntity<String> removeUserTherapy(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
@@ -125,9 +127,9 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/upload/profile-picture")
-    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadProfilePicture(@RequestParam MultipartFile file) {
         try {
             String imagePath = fileService.saveFile(file);
             return ResponseEntity.ok(imagePath);
@@ -137,6 +139,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<List<User>> searchUsers(@RequestParam String keyword) {
         if (keyword == null || keyword.isEmpty()) {

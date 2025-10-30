@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RegistrovaniKorisniciIzvestaj" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a630a787-311c-4def-a6e5-4c8af6d53016">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="username" class="java.lang.String"/>
+	<field name="role_name" class="java.lang.String"/>
+	<field name="firstName" class="java.lang.String"/>
+	<field name="lastName" class="java.lang.String"/>
+	<field name="id" class="java.lang.Integer"/>
+	<variable name="BrojRegistrovanihKorisnika" class="java.lang.Integer" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{id}]]></variableExpression>
+	</variable>
+	<group name="GrupaRole">
+		<groupExpression><![CDATA[$F{role_name}]]></groupExpression>
+		<groupHeader>
+			<band height="30">
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+				<textField>
+					<reportElement mode="Opaque" x="84" y="0" width="393" height="30" backcolor="rgba(161, 161, 161, 0.6666667)" uuid="2a3431df-21a1-4c62-afc8-a97e07de887b"/>
+					<box>
+						<topPen lineColor="rgba(0, 0, 0, 0.0)"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineColor="rgba(0, 0, 0, 0.0)"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{role_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="62" splitType="Stretch">
+			<staticText>
+				<reportElement x="135" y="0" width="292" height="30" uuid="2023bb36-7d91-4561-adae-09475778fd68"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Izveštaj registrovanih korisnika]]></text>
+			</staticText>
+			<textField pattern="d/MM/yy">
+				<reportElement x="229" y="31" width="100" height="30" uuid="5f836332-2cec-4792-a967-b7d17ed5653d"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="84" y="-1" width="131" height="30" forecolor="#FFFFFF" backcolor="#050505" uuid="e9ae17ad-96f6-4297-a5a3-2058427023ff"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Korisničko ime]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="215" y="-1" width="131" height="30" forecolor="#FFFFFF" backcolor="#050505" uuid="1eb902a6-ba49-46c8-a77c-35b437a59047"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Ime]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="346" y="-1" width="131" height="30" forecolor="#FFFFFF" backcolor="#050505" uuid="1eb902a6-ba49-46c8-a77c-35b437a59047"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Prezime]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement mode="Opaque" x="84" y="0" width="131" height="30" uuid="81e207db-34ca-4a38-9e92-5f06f5882fe9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="70dc2085-af0b-401e-b0dd-6d352cf6671b"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="215" y="0" width="131" height="30" uuid="48549797-5d88-4dd9-83db-0b0773690958">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="025dafa8-73aa-43bb-9f4c-eda25ac95de9"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="rgba(0, 0, 0, 0.0)"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(0, 0, 0, 0.0)"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{firstName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="346" y="0" width="131" height="30" uuid="48549797-5d88-4dd9-83db-0b0773690958">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="025dafa8-73aa-43bb-9f4c-eda25ac95de9"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineColor="rgba(0, 0, 0, 0.0)"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{lastName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="52" splitType="Stretch">
+			<textField>
+				<reportElement x="231" y="22" width="98" height="30" uuid="90fb72b9-fb7b-49de-a009-e4055127a6c5"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<textField>
+				<reportElement x="294" y="1" width="182" height="30" uuid="9ca2966d-7ac5-4efd-a2f7-04f35201abf7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{BrojRegistrovanihKorisnika}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="84" y="1" width="196" height="30" uuid="56cb0dc2-3749-4555-bd04-3ed248a5e724"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Ukupan broj registrovanih korisnika:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

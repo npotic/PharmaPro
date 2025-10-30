@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from '../services/axiosInstance';
 import AuthContext from '../services/AuthContext';
 import '../assets/css/Messages.css'; 
@@ -104,7 +104,7 @@ const Messages = () => {
                     ))}
                 </ul>
             </div>
-
+ 
             <div className="chat-box">
                 {selectedFriend ? (
                     <>
